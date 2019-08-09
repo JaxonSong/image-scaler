@@ -22,7 +22,8 @@
     "tiny",
     "scale",
     "zoom",
-    "reduce"
+    "reduce",
+    "canvas"
   ],
   "author": "Jaxon",
   "license": "MIT",

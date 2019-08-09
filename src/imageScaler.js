@@ -1,32 +1,60 @@
-function imageSclaer ({ imageUrl, scaleTo, quality = 0.7, isLocalImage, output }) {
+function imageSclaer ({ imageUrl, scaleTo = 100, quality = 1, mimeType = 'jpeg' }) {
   return new Promise((resolve, reject) => {
+    const correctmimeTypeList = ['jpeg', 'png', 'webp']
+    if (!correctmimeTypeList.includes(mimeType)) {
+      reject(new Error('mimeType wrong ! '))
+      return
+    }
+
     let canvas = document.createElement('canvas')
     let ctx = canvas.getContext('2d')
     let image = new Image()
-    image.src = isLocalImage ? imageUrl : 'https://images.weserv.nl/?url=' + imageUrl
-    image.setAttribute('crossOrigin', 'Anonymous') // 设置图片允许跨域
-    image.onload = () => {
-      let originalWidth = image.width
-      let originalHeight = image.height
-      let scale = scaleTo / image.width || 100 / image.width
-      let tiniedWidth = Math.round(originalWidth * scale)
-      let tiniedHeight = Math.round(originalHeight * scale)
-      canvas.width = tiniedWidth
-      canvas.height = tiniedHeight
-      ctx.drawImage(image, 0, 0, tiniedWidth, tiniedHeight)
-      if (output === 'blob') {
-        canvas.toBlob(blob => {
-          resolve(blob)
-        }, 'image/jpeg', quality)
-      } else {
-        let tiniedImageUrl = canvas.toDataURL('image/jpeg', quality)
-        resolve(tiniedImageUrl)
-      }
+    image.src = isLocalImage(imageUrl) ? imageUrl : 'https://images.weserv.nl/?url=' + imageUrl
+    image.setAttribute('crossOrigin', 'Anonymous')
+
+    if (image.complete) {
+      handle()
+    } else {
+      image.onload = handle()
     }
     image.onerror = () => {
       reject(new Error('load image error'))
     }
+
+    function handle () {
+      let originalWidth = image.width
+      let originalHeight = image.height
+      let scale = scaleTo / originalWidth
+      let scaledWidth = Math.round(originalWidth * scale)
+      let scaledHeight = Math.round(originalHeight * scale)
+      canvas.width = scaledWidth
+      canvas.height = scaledHeight
+      ctx.drawImage(image, 0, 0, scaledWidth, scaledHeight)
+
+      canvas.toBlob(blob => {
+        let url = window.URL.createObjectURL(blob)
+        resolve({ blob, url })
+      }, 'image/' + mimeType, quality)
+    }
   })
+}
+
+function isLocalImage (src) {
+  if (src.includes('http')) {
+    if (src.includes('localhost') || src.includes('192.168.1.10')) {
+      return true
+    } else {
+      let getHostReg = /http(s)?:\/\/(.*?)\//
+      let href = window.location.href
+      if (href.match(getHostReg)[0] === src.match(getHostReg)[0]) {
+        return true
+      } else {
+        return false
+      }
+    }
+  } else {
+    return true
+  }
 }
 
 module.exports = imageSclaer

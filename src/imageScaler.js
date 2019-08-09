@@ -6,8 +6,6 @@ function imageSclaer ({ imageUrl, scaleTo = 100, quality = 1, mimeType = 'jpeg' 
       return
     }
 
-    let canvas = document.createElement('canvas')
-    let ctx = canvas.getContext('2d')
     let image = new Image()
     image.src = isLocalImage(imageUrl) ? imageUrl : 'https://images.weserv.nl/?url=' + imageUrl
     image.setAttribute('crossOrigin', 'Anonymous')
@@ -15,18 +13,21 @@ function imageSclaer ({ imageUrl, scaleTo = 100, quality = 1, mimeType = 'jpeg' 
     if (image.complete) {
       handle()
     } else {
-      image.onload = handle()
+      image.onload = handle
     }
     image.onerror = () => {
       reject(new Error('load image error'))
     }
 
     function handle () {
+      let canvas = document.createElement('canvas')
+      let ctx = canvas.getContext('2d')
       let originalWidth = image.width
       let originalHeight = image.height
       let scale = scaleTo / originalWidth
       let scaledWidth = Math.round(originalWidth * scale)
       let scaledHeight = Math.round(originalHeight * scale)
+
       canvas.width = scaledWidth
       canvas.height = scaledHeight
       ctx.drawImage(image, 0, 0, scaledWidth, scaledHeight)

@@ -1,6 +1,6 @@
 {
   "name": "@jaxon_song/image-scaler",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A JavaScript tool that enlarges and reduces the size of the image",
   "main": "index.js",
   "scripts": {

@@ -45,7 +45,7 @@
    * resolved a Buffer in Node.js
   */
   imageScaler({
-    imageUrl: [url],
+    imageUrl: [url], // Can be the path or link to the image file
     scaleTo: 150
   }).then(
     buffer => {

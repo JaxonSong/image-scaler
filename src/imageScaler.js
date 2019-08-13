@@ -29,7 +29,7 @@ if (isNODE) {
   }
 }
 
-function imageSclaer ({ imageUrl, scaleTo = 100, quality = 1, mimeType = 'jpeg' }) {
+function imageScaler ({ imageUrl, scaleTo = 100, quality = 1, mimeType = 'jpeg' }) {
   return new Promise((resolve, reject) => {
     const correctmimeTypeList = isNODE ? ['jpeg', 'png'] : ['jpeg', 'png', 'webp']
     if (!correctmimeTypeList.includes(mimeType)) {
@@ -92,4 +92,4 @@ function isLocalImage (src) {
   }
 }
 
-module.exports = imageSclaer
+module.exports = imageScaler

@@ -23,7 +23,8 @@
     "scale",
     "zoom",
     "reduce",
-    "canvas"
+    "canvas",
+    "node"
   ],
   "author": "Jaxon",
   "license": "MIT",
@@ -43,6 +44,7 @@
     "uglify-js": "^3.6.0"
   },
   "dependencies": {
-    "babel-runtime": "^6.26.0"
+    "babel-runtime": "^6.26.0",
+    "canvas": "^2.5.0"
   }
 }

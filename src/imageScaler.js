@@ -1,26 +1,48 @@
+const isNODE = typeof window === 'undefined'
+let createCanvas, loadImage
+if (isNODE) {
+  createCanvas = require('canvas').createCanvas
+  loadImage = require('canvas').loadImage
+} else {
+  loadImage = function (src) {
+    return new Promise((resolve, reject) => {
+      let image = new Image()
+
+      image.setAttribute('crossOrigin', 'Anonymous')
+      if (isLocalImage(src)) {
+        image.src = src
+      } else {
+        image.src = 'https://images.weserv.nl/?url=' + src
+      }
+
+      if (image.complete) {
+        resolve(image)
+      } else {
+        image.onload = function () {
+          resolve(image)
+        }
+        image.onerror = () => {
+          reject(new Error('load image error'))
+        }
+      }
+    })
+  }
+}
+
 function imageSclaer ({ imageUrl, scaleTo = 100, quality = 1, mimeType = 'jpeg' }) {
   return new Promise((resolve, reject) => {
-    const correctmimeTypeList = ['jpeg', 'png', 'webp']
+    const correctmimeTypeList = isNODE ? ['jpeg', 'png'] : ['jpeg', 'png', 'webp']
     if (!correctmimeTypeList.includes(mimeType)) {
       reject(new Error('mimeType wrong ! '))
       return
     }
 
-    let image = new Image()
-    image.src = isLocalImage(imageUrl) ? imageUrl : 'https://images.weserv.nl/?url=' + imageUrl
-    image.setAttribute('crossOrigin', 'Anonymous')
+    loadImage(imageUrl).then(image => {
+      handle(image)
+    })
 
-    if (image.complete) {
-      handle()
-    } else {
-      image.onload = handle
-    }
-    image.onerror = () => {
-      reject(new Error('load image error'))
-    }
-
-    function handle () {
-      let canvas = document.createElement('canvas')
+    function handle (image) {
+      let canvas = isNODE ? createCanvas() : document.createElement('canvas')
       let ctx = canvas.getContext('2d')
       let originalWidth = image.width
       let originalHeight = image.height
@@ -32,10 +54,22 @@ function imageSclaer ({ imageUrl, scaleTo = 100, quality = 1, mimeType = 'jpeg' 
       canvas.height = scaledHeight
       ctx.drawImage(image, 0, 0, scaledWidth, scaledHeight)
 
-      canvas.toBlob(blob => {
-        let url = window.URL.createObjectURL(blob)
-        resolve({ blob, url })
-      }, 'image/' + mimeType, quality)
+      if (isNODE) {
+        let config = {}
+        mimeType === 'jpeg' ? config.quality = quality : config.compressionLevel = quality
+        canvas.toBuffer((err, buffer) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(buffer)
+          }
+        }, 'image/' + mimeType, config)
+      } else {
+        canvas.toBlob(blob => {
+          let url = window.URL.createObjectURL(blob)
+          resolve({ blob, url })
+        }, 'image/' + mimeType, quality)
+      }
     }
   })
 }

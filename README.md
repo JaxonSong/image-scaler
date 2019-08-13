@@ -7,6 +7,7 @@
 - Zoom in picture
 - Zoom out image
 - Support Node.js(^1.0.3)
+- Url that supports incoming local or online pictures
 
 ## Installing
 ### Using npm:

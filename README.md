@@ -6,6 +6,7 @@
 - Reduce image size
 - Zoom in picture
 - Zoom out image
+- Support Node.js(^1.0.3)
 
 ## Installing
 ### Using npm:
@@ -18,6 +19,7 @@
 ```
 
 ## Usage
+### Used in Browser
 ```javascript
   const imageScaler = require('@jaxon_song/image-scaler')
 
@@ -34,6 +36,22 @@
     // data includes the blob object and url of the adjusted image
     console.log(data)
   })
+```
+### Used in Node.js
+```javascript
+  const imageScaler = require('@jaxon_song/image-scaler')
+  /**
+   * resolved a Buffer in Node.js
+  */
+  imageScaler({
+    imageUrl: [url],
+    scaleTo: 150
+  }).then(
+    buffer => {
+      console.log(buffer)
+    }
+  )
+
 ```
 
 ## License

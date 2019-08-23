@@ -2,3 +2,4 @@ node_modules
 images
 index.html
 test.js
+package-lock.json

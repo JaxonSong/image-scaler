@@ -29,11 +29,15 @@ if (isNODE) {
   }
 }
 
-function imageScaler ({ imageUrl, scaleTo = 100, quality = 1, mimeType = 'jpeg' }) {
+function imageScaler ({ imageUrl, width, height, quality = 1, mimeType = 'jpeg' }) {
   return new Promise((resolve, reject) => {
     const correctmimeTypeList = isNODE ? ['jpeg', 'png'] : ['jpeg', 'png', 'webp']
+    if (!width && !height) {
+      reject(new Error('Width and height at least one ! '))
+      return
+    }
     if (!correctmimeTypeList.includes(mimeType)) {
-      reject(new Error('mimeType wrong ! '))
+      reject(new Error('MimeType wrong ! '))
       return
     }
 
@@ -46,9 +50,11 @@ function imageScaler ({ imageUrl, scaleTo = 100, quality = 1, mimeType = 'jpeg' 
       let ctx = canvas.getContext('2d')
       let originalWidth = image.width
       let originalHeight = image.height
-      let scale = scaleTo / originalWidth
-      let scaledWidth = Math.round(originalWidth * scale)
-      let scaledHeight = Math.round(originalHeight * scale)
+
+      let scale = width ? width / originalWidth : height / originalHeight
+
+      let scaledWidth = width || Math.round(originalWidth * scale)
+      let scaledHeight = height || Math.round(originalHeight * scale)
 
       canvas.width = scaledWidth
       canvas.height = scaledHeight

@@ -21,7 +21,7 @@
 
 ## Usage
 ### Used in Browser
-#### 1.0.5 or higher
+#### v1.0.5 or higher
 ```javascript
   const imageScaler = require('@jaxon_song/image-scaler')
 
@@ -40,7 +40,7 @@
       console.log(data)
     })
 ```
-#### 1.0.4 or less:
+#### v1.0.4 or less:
 ```javascript
   const imageScaler = require('@jaxon_song/image-scaler')
 
@@ -59,7 +59,7 @@
     })
 ```
 ### Used in Node.js
-#### 1.0.5 or higher:
+#### v1.0.5 or higher:
 ```javascript
   const imageScaler = require('@jaxon_song/image-scaler')
   /**
@@ -75,7 +75,7 @@
   )
 
 ```
-#### 1.0.4 or less:
+#### v1.0.4 or less:
 ```javascript
   const imageScaler = require('@jaxon_song/image-scaler')
   /**
